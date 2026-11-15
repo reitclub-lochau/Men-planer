@@ -593,7 +593,7 @@ function distributeTemplate() {
     return;
   }
 
-  const sourceRows = templatePlans[templateId] || [];
+  const sourceRows = templatePlans[`${templateId}::${templateWeek}`] || [];
 
   if (sourceRows.length === 0) {
     alert('Der Hauptspeiseplan enthält noch keine Gerichte.');
