@@ -362,6 +362,26 @@ function createTemplate() {
   setTemplateId(id);
   setPage('Hauptspeisepläne');
 }
+
+function addTemplateMeal(day, type) {
+  if (!templateId) return;
+
+  const id = makeId();
+
+  setTemplatePlans(prev => ({
+    ...prev,
+    [templateId]: [
+      ...(prev[templateId] || []),
+      {
+        id,
+        day,
+        type,
+        name: '',
+        portions: 0
+      }
+    ]
+  }));
+}
   function openNewKitchen() {
     setEditingKitchenId(null);
     setKitchenForm({
