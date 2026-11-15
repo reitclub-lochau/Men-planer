@@ -128,7 +128,33 @@ function loadKitchens() {
     return DEFAULT_KITCHENS;
   }
 }
+function loadTemplates() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(TEMPLATES_KEY) || '[]'
+    );
 
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function loadTemplatePlans() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(TEMPLATE_PLANS_KEY) || '{}'
+    );
+
+    return saved &&
+      typeof saved === 'object' &&
+      !Array.isArray(saved)
+      ? saved
+      : {};
+  } catch {
+    return {};
+  }
+}
 const EMPTY_FORM = {
   name: '',
   participants: 0,
