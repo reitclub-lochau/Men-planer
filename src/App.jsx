@@ -181,7 +181,7 @@ const [templatePlans, setTemplatePlans] = useState(
 );
 
 const [templateId, setTemplateId] = useState('');
-
+const [templateWeek, setTemplateWeek] = useState(1);
 const [showDistribution, setShowDistribution] = useState(false);
 
 const [targetKitchenIds, setTargetKitchenIds] = useState([]);
