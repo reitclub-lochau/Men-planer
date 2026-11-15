@@ -587,7 +587,59 @@ function editTemplateMeal(id, field, value) {
 
     setEditingIds([]);
   }
+function distributeTemplate() {
+  if (!templateId) {
+    alert('Bitte zuerst einen Hauptspeiseplan auswählen.');
+    return;
+  }
 
+  const sourceRows = templatePlans[templateId] || [];
+
+  if (sourceRows.length === 0) {
+    alert('Der Hauptspeiseplan enthält noch keine Gerichte.');
+    return;
+  }
+
+  if (targetKitchenIds.length === 0) {
+    alert('Bitte mindestens eine Küche auswählen.');
+    return;
+  }
+
+  const confirmed = window.confirm(
+    'Speiseplan auf die ausgewählten Küchen übertragen? ' +
+    'Bereits vorhandene Gerichte dieser Woche werden ersetzt.'
+  );
+
+  if (!confirmed) return;
+
+  setPlans(prev => {
+    const updated = { ...prev };
+
+    targetKitchenIds.forEach(id => {
+      const kitchen = kitchens.find(item => item.id === id);
+      if (!kitchen) return;
+
+      const key = `${kitchen.name}::${weekKey}`;
+
+      updated[key] = sourceRows
+        .filter(row =>
+          kitchen.meals.includes(row.type || 'Mittagessen')
+        )
+        .map(row => ({
+          ...row,
+          id: makeId(),
+          portions: 0
+        }));
+    });
+
+    return updated;
+  });
+
+  setShowDistribution(false);
+  setTargetKitchenIds([]);
+
+  alert('Hauptspeiseplan erfolgreich verteilt!');
+}
   return (
     <div className="app">
       <aside className="sidebar">
