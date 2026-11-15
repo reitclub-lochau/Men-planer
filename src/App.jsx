@@ -1272,7 +1272,7 @@ function distributeTemplate() {
           <div key={type} style={{ marginBottom: 20 }}>
             <h4>{MEAL_ICONS[type]} {type}</h4>
 
-            {(templatePlans[templateId] || [])
+            {(templatePlans[`${templateId}::${templateWeek}`] || [])
               .filter(row => row.day === day && row.type === type)
               .map(row => (
                 <input
