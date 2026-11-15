@@ -626,15 +626,19 @@ function distributeTemplate() {
 
       const key = `${kitchen.name}::${weekKey}`;
 
-      updated[key] = sourceRows
-        .filter(row =>
-          kitchen.meals.includes(row.type || 'Mittagessen')
-        )
-        .map(row => ({
-          ...row,
-          id: makeId(),
-          portions: 0
-        }));
+    const newRows = sourceRows
+  .filter(row =>
+    kitchen.meals.includes(row.type || 'Mittagessen')
+  )
+  .map(row => ({
+    ...row,
+    id: makeId(),
+    portions: 0
+  }));
+
+updated[key] = distributionAction === 'replace'
+  ? newRows
+  : [...(updated[key] || []), ...newRows];
     });
 
     return updated;
