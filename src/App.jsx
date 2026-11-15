@@ -45,7 +45,8 @@ const NAV = [
 
 const STORAGE_KEY = 'menueplaner-demo-v1';
 const KITCHENS_KEY = 'menueplaner-kitchens-v1';
-
+const TEMPLATES_KEY = 'menueplaner-templates-v1';
+const TEMPLATE_PLANS_KEY = 'menueplaner-template-plans-v1';
 const DEFAULT_KITCHENS = [
   {
     id: 'kita-sonnenblume',
