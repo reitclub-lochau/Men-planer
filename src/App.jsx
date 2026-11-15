@@ -16,8 +16,6 @@ import {
   Check
 } from 'lucide-react';
 
-const KITCHENS = ['Kita Sonnenblume', 'Firmenkantine Leipzig'];
-
 const DAYS = [
   'Montag',
   'Dienstag',
@@ -45,6 +43,22 @@ const NAV = [
 ];
 
 const STORAGE_KEY = 'menueplaner-demo-v1';
+const KITCHENS_KEY = 'menueplaner-kitchens-v1';
+
+const DEFAULT_KITCHENS = [
+  {
+    id: 'kita-sonnenblume',
+    name: 'Kita Sonnenblume',
+    participants: 200,
+    meals: [...MEAL_TYPES]
+  },
+  {
+    id: 'firmenkantine-leipzig',
+    name: 'Firmenkantine Leipzig',
+    participants: 150,
+    meals: [...MEAL_TYPES]
+  }
+];
 
 function mondayOf(date) {
   const d = new Date(
@@ -52,9 +66,7 @@ function mondayOf(date) {
     date.getMonth(),
     date.getDate()
   );
-
   d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-
   return d;
 }
 
@@ -62,7 +74,6 @@ function isoDate(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
-
   return `${y}-${m}-${d}`;
 }
 
@@ -80,12 +91,16 @@ function displayDate(date) {
   });
 }
 
+function makeId() {
+  return globalThis.crypto?.randomUUID?.() ||
+    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 function loadPlans() {
   try {
     const value = JSON.parse(
       localStorage.getItem(STORAGE_KEY) || '{}'
     );
-
     return value &&
       typeof value === 'object' &&
       !Array.isArray(value)
@@ -96,28 +111,52 @@ function loadPlans() {
   }
 }
 
-function makeId() {
-  return globalThis.crypto?.randomUUID?.() ||
-    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+function loadKitchens() {
+  try {
+    const stored = localStorage.getItem(KITCHENS_KEY);
+    if (!stored) return DEFAULT_KITCHENS;
+
+    const value = JSON.parse(stored);
+    if (!Array.isArray(value) || value.length === 0) {
+      return DEFAULT_KITCHENS;
+    }
+
+    return value;
+  } catch {
+    return DEFAULT_KITCHENS;
+  }
 }
+
+const EMPTY_FORM = {
+  name: '',
+  participants: 0,
+  meals: [...MEAL_TYPES],
+  copyFrom: ''
+};
 
 export default function App() {
   const [page, setPage] = useState('Speiseplanung');
-
-  const [kitchen, setKitchen] = useState(KITCHENS[0]);
-
+  const [kitchens, setKitchens] = useState(loadKitchens);
+  const [kitchenId, setKitchenId] = useState(
+    () => loadKitchens()[0].id
+  );
   const [weekStart, setWeekStart] = useState(
     () => mondayOf(new Date())
   );
-
   const [plans, setPlans] = useState(loadPlans);
-
   const [saved, setSaved] = useState(true);
-
   const [editingIds, setEditingIds] = useState([]);
 
+  const [showKitchenForm, setShowKitchenForm] = useState(false);
+  const [editingKitchenId, setEditingKitchenId] = useState(null);
+  const [kitchenForm, setKitchenForm] = useState(EMPTY_FORM);
+
+  const currentKitchen =
+    kitchens.find(item => item.id === kitchenId) ||
+    kitchens[0];
+
   const weekKey = isoDate(weekStart);
-  const planKey = `${kitchen}::${weekKey}`;
+  const planKey = `${currentKitchen.name}::${weekKey}`;
 
   const rows = useMemo(
     () => Array.isArray(plans[planKey])
@@ -133,15 +172,11 @@ export default function App() {
 
   const totalsByType = MEAL_TYPES.reduce((result, type) => {
     result[type] = rows
-      .filter(
-        row => (row.type || 'Mittagessen') === type
-      )
+      .filter(row => (row.type || 'Mittagessen') === type)
       .reduce(
-        (sum, row) =>
-          sum + (Number(row.portions) || 0),
+        (sum, row) => sum + (Number(row.portions) || 0),
         0
       );
-
     return result;
   }, {});
 
@@ -151,12 +186,22 @@ export default function App() {
         STORAGE_KEY,
         JSON.stringify(plans)
       );
-
       setSaved(true);
     } catch {
       setSaved(false);
     }
   }, [plans]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        KITCHENS_KEY,
+        JSON.stringify(kitchens)
+      );
+    } catch {
+      setSaved(false);
+    }
+  }, [kitchens]);
 
   function changeRows(update) {
     setPlans(prev => {
@@ -199,11 +244,7 @@ export default function App() {
   }
 
   function removeMeal(id) {
-    if (
-      window.confirm(
-        'Dieses Gericht wirklich entfernen?'
-      )
-    ) {
+    if (window.confirm('Dieses Gericht wirklich entfernen?')) {
       changeRows(current =>
         current.filter(row => row.id !== id)
       );
@@ -223,20 +264,206 @@ export default function App() {
   }
 
   function moveWeek(delta) {
-    setWeekStart(prev =>
-      addDays(prev, delta * 7)
+    setWeekStart(prev => addDays(prev, delta * 7));
+    setEditingIds([]);
+  }
+
+  function openNewKitchen() {
+    setEditingKitchenId(null);
+    setKitchenForm({
+      ...EMPTY_FORM,
+      meals: [...MEAL_TYPES]
+    });
+    setShowKitchenForm(true);
+  }
+
+  function openEditKitchen(item) {
+    setEditingKitchenId(item.id);
+
+    setKitchenForm({
+      name: item.name,
+      participants: item.participants,
+      meals: [...item.meals],
+      copyFrom: ''
+    });
+
+    setShowKitchenForm(true);
+  }
+
+  function toggleKitchenMeal(type) {
+    setKitchenForm(prev => ({
+      ...prev,
+      meals: prev.meals.includes(type)
+        ? prev.meals.filter(item => item !== type)
+        : [...prev.meals, type]
+    }));
+  }
+
+  function saveKitchen(event) {
+    event.preventDefault();
+
+    const name = kitchenForm.name.trim();
+    const participants = Number(kitchenForm.participants);
+
+    if (!name) {
+      alert('Bitte einen Küchennamen eingeben.');
+      return;
+    }
+
+    if (
+      !Number.isInteger(participants) ||
+      participants < 0 ||
+      participants > 10000
+    ) {
+      alert('Bitte eine gültige Teilnehmerzahl eingeben.');
+      return;
+    }
+
+    if (kitchenForm.meals.length === 0) {
+      alert('Bitte mindestens eine Mahlzeit auswählen.');
+      return;
+    }
+
+    const duplicate = kitchens.some(
+      item =>
+        item.name.toLowerCase() === name.toLowerCase() &&
+        item.id !== editingKitchenId
     );
+
+    if (duplicate) {
+      alert('Eine Küche mit diesem Namen existiert bereits.');
+      return;
+    }
+
+    if (editingKitchenId) {
+      const oldKitchen = kitchens.find(
+        item => item.id === editingKitchenId
+      );
+
+      if (oldKitchen && oldKitchen.name !== name) {
+        setPlans(prev => {
+          const updated = { ...prev };
+          const prefix = `${oldKitchen.name}::`;
+
+          Object.keys(prev).forEach(key => {
+            if (key.startsWith(prefix)) {
+              const newKey =
+                `${name}::${key.slice(prefix.length)}`;
+
+              updated[newKey] = prev[key];
+              delete updated[key];
+            }
+          });
+
+          return updated;
+        });
+      }
+
+      setKitchens(prev =>
+        prev.map(item =>
+          item.id === editingKitchenId
+            ? {
+                ...item,
+                name,
+                participants,
+                meals: kitchenForm.meals
+              }
+            : item
+        )
+      );
+    } else {
+      const id = makeId();
+
+      const newKitchen = {
+        id,
+        name,
+        participants,
+        meals: kitchenForm.meals
+      };
+
+      if (kitchenForm.copyFrom) {
+        const sourceKitchen = kitchens.find(
+          item => item.id === kitchenForm.copyFrom
+        );
+
+        if (sourceKitchen) {
+          const sourceKey =
+            `${sourceKitchen.name}::${weekKey}`;
+
+          const sourceRows = Array.isArray(plans[sourceKey])
+            ? plans[sourceKey]
+            : [];
+
+          const copiedRows = sourceRows
+            .filter(row =>
+              kitchenForm.meals.includes(
+                row.type || 'Mittagessen'
+              )
+            )
+            .map(row => ({
+              ...row,
+              id: makeId(),
+              portions: 0
+            }));
+
+          setPlans(prev => ({
+            ...prev,
+            [`${name}::${weekKey}`]: copiedRows
+          }));
+        }
+      }
+
+      setKitchens(prev => [...prev, newKitchen]);
+      setKitchenId(id);
+    }
+
+    setShowKitchenForm(false);
+    setEditingKitchenId(null);
+    setEditingIds([]);
+  }
+
+  function deleteKitchen(item) {
+    if (kitchens.length <= 1) {
+      alert('Mindestens eine Küche muss vorhanden bleiben.');
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Küche "${item.name}" wirklich löschen?\n\n` +
+      'Auch alle gespeicherten Speisepläne dieser Küche werden gelöscht.'
+    );
+
+    if (!confirmed) return;
+
+    const prefix = `${item.name}::`;
+
+    setPlans(prev => {
+      const updated = { ...prev };
+
+      Object.keys(updated).forEach(key => {
+        if (key.startsWith(prefix)) {
+          delete updated[key];
+        }
+      });
+
+      return updated;
+    });
+
+    const remaining = kitchens.filter(
+      kitchen => kitchen.id !== item.id
+    );
+
+    setKitchens(remaining);
+
+    if (kitchenId === item.id) {
+      setKitchenId(remaining[0].id);
+    }
 
     setEditingIds([]);
   }
 
-  function printPlan() {
-    window.print();
-  }
-
   return (
     <div className="app">
-
       <aside className="sidebar">
         <h2>🍽️ MenüPlaner</h2>
         <p>Kita &amp; Business</p>
@@ -245,9 +472,7 @@ export default function App() {
           {NAV.map(([name, Icon]) => (
             <button
               key={name}
-              className={
-                page === name ? 'active' : ''
-              }
+              className={page === name ? 'active' : ''}
               onClick={() => setPage(name)}
             >
               <Icon size={20} />
@@ -258,7 +483,6 @@ export default function App() {
       </aside>
 
       <main className="main">
-
         <header className="header">
           <h1>{page}</h1>
 
@@ -268,15 +492,15 @@ export default function App() {
             </span>
 
             <select
-              value={kitchen}
+              value={currentKitchen.id}
               onChange={e => {
-                setKitchen(e.target.value);
+                setKitchenId(e.target.value);
                 setEditingIds([]);
               }}
             >
-              {KITCHENS.map(name => (
-                <option key={name}>
-                  {name}
+              {kitchens.map(item => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
                 </option>
               ))}
             </select>
@@ -284,23 +508,19 @@ export default function App() {
         </header>
 
         <div className="welcome">
-          <strong>
-            MenüPlaner – Testversion
-          </strong>
-
+          <strong>MenüPlaner – Testversion</strong>
           <p>
-            Deine Speisepläne werden automatisch
-            in diesem Browser gespeichert.
+            Alle Daten werden automatisch in diesem Browser
+            gespeichert. Eine zentrale Speicherung folgt später.
           </p>
         </div>
 
         {page === 'Dashboard' && (
           <>
             <section className="stats">
-
               <div className="card">
                 <h3>Aktuelle Küche</h3>
-                <strong>{kitchen}</strong>
+                <strong>{currentKitchen.name}</strong>
               </div>
 
               <div className="card">
@@ -311,9 +531,7 @@ export default function App() {
               {MEAL_TYPES.map(type => (
                 <div className="card" key={type}>
                   <h3>{type} – Portionen</h3>
-                  <strong>
-                    {totalsByType[type]}
-                  </strong>
+                  <strong>{totalsByType[type]}</strong>
                 </div>
               ))}
 
@@ -323,17 +541,18 @@ export default function App() {
               </div>
 
               <div className="card">
-                <h3>Speicherung</h3>
-                <strong>
-                  {saved ? 'Lokal' : 'Fehler'}
-                </strong>
+                <h3>Anzahl Küchen</h3>
+                <strong>{kitchens.length}</strong>
               </div>
 
+              <div className="card">
+                <h3>Speicherung</h3>
+                <strong>{saved ? 'Lokal' : 'Fehler'}</strong>
+              </div>
             </section>
 
             <section className="meal-plan">
               <h2>Aktueller Wochenplan</h2>
-
               <p>
                 {displayDate(weekStart)} –{' '}
                 {displayDate(addDays(weekStart, 4))}
@@ -341,9 +560,7 @@ export default function App() {
 
               <button
                 className="primary"
-                onClick={() =>
-                  setPage('Speiseplanung')
-                }
+                onClick={() => setPage('Speiseplanung')}
               >
                 Speiseplan bearbeiten
               </button>
@@ -353,16 +570,13 @@ export default function App() {
 
         {page === 'Speiseplanung' && (
           <section className="meal-plan">
-
             <div className="plan-toolbar">
-
               <div>
                 <h2>Wochenspeiseplan</h2>
-                <p>{kitchen}</p>
+                <p>{currentKitchen.name}</p>
               </div>
 
               <div className="week-controls">
-
                 <button
                   onClick={() => moveWeek(-1)}
                   aria-label="Vorherige Woche"
@@ -392,12 +606,11 @@ export default function App() {
 
                 <button
                   className="primary"
-                  onClick={printPlan}
+                  onClick={() => window.print()}
                 >
                   <Printer size={17} />
                   Drucken
                 </button>
-
               </div>
             </div>
 
@@ -408,7 +621,6 @@ export default function App() {
             </p>
 
             <div className="days-container">
-
               {DAYS.map((day, index) => {
                 const dayRows = rows.filter(
                   row => row.day === day
@@ -421,14 +633,9 @@ export default function App() {
                 );
 
                 return (
-                  <section
-                    className="day-card"
-                    key={day}
-                  >
-
+                  <section className="day-card" key={day}>
                     <div className="day-card-header">
                       <h3>{day}</h3>
-
                       <span>
                         {displayDate(
                           addDays(weekStart, index)
@@ -436,182 +643,170 @@ export default function App() {
                       </span>
                     </div>
 
-                    {MEAL_TYPES.map(type => {
-                      const typeRows = dayRows.filter(
-                        row =>
-                          (row.type || 'Mittagessen') === type
-                      );
+                    {MEAL_TYPES
+                      .filter(type =>
+                        currentKitchen.meals.includes(type)
+                      )
+                      .map(type => {
+                        const typeRows = dayRows.filter(
+                          row =>
+                            (row.type || 'Mittagessen') === type
+                        );
 
-                      const typeTotal = typeRows.reduce(
-                        (sum, row) =>
-                          sum +
-                          (Number(row.portions) || 0),
-                        0
-                      );
+                        const typeTotal = typeRows.reduce(
+                          (sum, row) =>
+                            sum + (Number(row.portions) || 0),
+                          0
+                        );
 
-                      return (
-                        <div
-                          className="meal-section"
-                          key={type}
-                        >
+                        return (
+                          <div
+                            className="meal-section"
+                            key={type}
+                          >
+                            <div className="meal-section-header">
+                              <h4>
+                                {MEAL_ICONS[type]} {type}
+                              </h4>
+                              <span>
+                                {typeTotal} Portionen
+                              </span>
+                            </div>
 
-                          <div className="meal-section-header">
-                            <h4>
-                              {MEAL_ICONS[type]} {type}
-                            </h4>
+                            {typeRows.length === 0 && (
+                              <p className="empty-meal">
+                                Noch kein Gericht geplant
+                              </p>
+                            )}
 
-                            <span>
-                              {typeTotal} Portionen
-                            </span>
-                          </div>
+                            {typeRows.map(row => {
+                              const isEditing =
+                                editingIds.includes(row.id);
 
-                          {typeRows.length === 0 && (
-                            <p className="empty-meal">
-                              Noch kein Gericht geplant
-                            </p>
-                          )}
-
-                          {typeRows.map(row => {
-                            const isEditing =
-                              editingIds.includes(row.id);
-
-                            return (
-                              <div
-                                className="dish-card"
-                                key={row.id}
-                              >
-
-                                {isEditing ? (
-                                  <div className="dish-edit">
-
-                                    <label>
-                                      Gericht
-
-                                      <input
-                                        type="text"
-                                        value={row.name || ''}
-                                        placeholder="Gericht eingeben"
-                                        maxLength={150}
-                                        onChange={e =>
-                                          editMeal(
-                                            row.id,
-                                            'name',
-                                            e.target.value
-                                          )
-                                        }
-                                      />
-                                    </label>
-
-                                    <label>
-                                      Portionen
-
-                                      <input
-                                        type="number"
-                                        min="0"
-                                        max="500"
-                                        step="1"
-                                        value={row.portions}
-                                        onChange={e => {
-                                          const value =
-                                            e.target.value;
-
-                                          const n =
-                                            Number(value);
-
-                                          if (
-                                            value === '' ||
-                                            (
-                                              Number.isInteger(n) &&
-                                              n >= 0 &&
-                                              n <= 500
-                                            )
-                                          ) {
+                              return (
+                                <div
+                                  className="dish-card"
+                                  key={row.id}
+                                >
+                                  {isEditing ? (
+                                    <div className="dish-edit">
+                                      <label>
+                                        Gericht
+                                        <input
+                                          type="text"
+                                          value={row.name || ''}
+                                          placeholder="Gericht eingeben"
+                                          maxLength={150}
+                                          onChange={e =>
                                             editMeal(
                                               row.id,
-                                              'portions',
-                                              value === ''
-                                                ? ''
-                                                : n
-                                            );
+                                              'name',
+                                              e.target.value
+                                            )
                                           }
-                                        }}
-                                      />
-                                    </label>
+                                        />
+                                      </label>
 
-                                  </div>
-                                ) : (
-                                  <div className="dish-info">
+                                      <label>
+                                        Portionen
+                                        <input
+                                          type="number"
+                                          min="0"
+                                          max="500"
+                                          step="1"
+                                          value={row.portions}
+                                          onChange={e => {
+                                            const value =
+                                              e.target.value;
+                                            const n =
+                                              Number(value);
 
-                                    <strong>
-                                      {row.name ||
-                                        'Unbenanntes Gericht'}
-                                    </strong>
+                                            if (
+                                              value === '' ||
+                                              (
+                                                Number.isInteger(n) &&
+                                                n >= 0 &&
+                                                n <= 500
+                                              )
+                                            ) {
+                                              editMeal(
+                                                row.id,
+                                                'portions',
+                                                value === ''
+                                                  ? ''
+                                                  : n
+                                              );
+                                            }
+                                          }}
+                                        />
+                                      </label>
+                                    </div>
+                                  ) : (
+                                    <div className="dish-info">
+                                      <strong>
+                                        {row.name ||
+                                          'Unbenanntes Gericht'}
+                                      </strong>
 
-                                    <span>
-                                      {Number(row.portions) || 0}
-                                      {' '}Portionen
-                                    </span>
-
-                                  </div>
-                                )}
-
-                                <div className="dish-actions">
-
-                                  <button
-                                    className="edit-button"
-                                    onClick={() =>
-                                      toggleEditing(row.id)
-                                    }
-                                  >
-                                    {isEditing ? (
-                                      <>
-                                        <Check size={17} />
-                                        Fertig
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Pencil size={17} />
-                                        Bearbeiten
-                                      </>
-                                    )}
-                                  </button>
-
-                                  {isEditing && (
-                                    <button
-                                      className="danger"
-                                      aria-label="Gericht löschen"
-                                      onClick={() =>
-                                        removeMeal(row.id)
-                                      }
-                                    >
-                                      <Trash2 size={17} />
-                                    </button>
+                                      <span>
+                                        {Number(row.portions) || 0}
+                                        {' '}Portionen
+                                      </span>
+                                    </div>
                                   )}
 
+                                  <div className="dish-actions">
+                                    <button
+                                      className="edit-button"
+                                      onClick={() =>
+                                        toggleEditing(row.id)
+                                      }
+                                    >
+                                      {isEditing ? (
+                                        <>
+                                          <Check size={17} />
+                                          Fertig
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Pencil size={17} />
+                                          Bearbeiten
+                                        </>
+                                      )}
+                                    </button>
+
+                                    {isEditing && (
+                                      <button
+                                        className="danger"
+                                        aria-label="Gericht löschen"
+                                        onClick={() =>
+                                          removeMeal(row.id)
+                                        }
+                                      >
+                                        <Trash2 size={17} />
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
+                              );
+                            })}
 
-                              </div>
-                            );
-                          })}
-
-                          <button
-                            className="add-meal-button"
-                            onClick={() =>
-                              addMeal(day, type)
-                            }
-                          >
-                            <Plus size={17} />
-                            Gericht hinzufügen
-                          </button>
-
-                        </div>
-                      );
-                    })}
+                            <button
+                              className="add-meal-button"
+                              onClick={() =>
+                                addMeal(day, type)
+                              }
+                            >
+                              <Plus size={17} />
+                              Gericht hinzufügen
+                            </button>
+                          </div>
+                        );
+                      })}
 
                     <div className="day-card-footer">
                       <strong>
-                        Tagessumme:
-                        {' '}{dayTotal} Portionen
+                        Tagessumme: {dayTotal} Portionen
                       </strong>
 
                       {dayTotal > 500 && (
@@ -620,11 +815,9 @@ export default function App() {
                         </span>
                       )}
                     </div>
-
                   </section>
                 );
               })}
-
             </div>
 
             <div className="summary">
@@ -646,28 +839,206 @@ export default function App() {
                 </strong>
               </p>
             </div>
+          </section>
+        )}
 
-            <p className="footnote">
-              Hinweis: Bei mehr als 500 Portionen
-              pro Tag erscheint eine Warnung.
-              Alle Daten werden derzeit
-              ausschließlich lokal in diesem
-              Browser gespeichert.
-            </p>
+        {page === 'Küchen' && (
+          <section className="meal-plan">
+            <div className="kitchen-heading">
+              <div>
+                <h2>Küchenverwaltung</h2>
+                <p>
+                  Verwalte deine Küchen und deren Mahlzeiten.
+                </p>
+              </div>
 
+              <button
+                className="add-meal-button"
+                onClick={openNewKitchen}
+              >
+                <Plus size={18} />
+                Neue Küche
+              </button>
+            </div>
+
+            {showKitchenForm && (
+              <form
+                className="kitchen-form"
+                onSubmit={saveKitchen}
+              >
+                <h3>
+                  {editingKitchenId
+                    ? 'Küche bearbeiten'
+                    : 'Neue Küche anlegen'}
+                </h3>
+
+                <label>
+                  Küchenname
+                  <input
+                    required
+                    maxLength={100}
+                    value={kitchenForm.name}
+                    onChange={e =>
+                      setKitchenForm(prev => ({
+                        ...prev,
+                        name: e.target.value
+                      }))
+                    }
+                    placeholder="z. B. Kita Regenbogen"
+                  />
+                </label>
+
+                <label>
+                  Anzahl Essensteilnehmer
+                  <input
+                    type="number"
+                    min="0"
+                    max="10000"
+                    value={kitchenForm.participants}
+                    onChange={e =>
+                      setKitchenForm(prev => ({
+                        ...prev,
+                        participants: e.target.value
+                      }))
+                    }
+                  />
+                </label>
+
+                <fieldset>
+                  <legend>Angebotene Mahlzeiten</legend>
+
+                  {MEAL_TYPES.map(type => (
+                    <label
+                      className="meal-checkbox"
+                      key={type}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={
+                          kitchenForm.meals.includes(type)
+                        }
+                        onChange={() =>
+                          toggleKitchenMeal(type)
+                        }
+                      />
+                      {MEAL_ICONS[type]} {type}
+                    </label>
+                  ))}
+                </fieldset>
+
+                {!editingKitchenId && (
+                  <label>
+                    Speiseplan für diese Woche
+                    <select
+                      value={kitchenForm.copyFrom}
+                      onChange={e =>
+                        setKitchenForm(prev => ({
+                          ...prev,
+                          copyFrom: e.target.value
+                        }))
+                      }
+                    >
+                      <option value="">
+                        Leeren Speiseplan erstellen
+                      </option>
+
+                      {kitchens.map(item => (
+                        <option
+                          key={item.id}
+                          value={item.id}
+                        >
+                          Von {item.name} übernehmen
+                        </option>
+                      ))}
+                    </select>
+
+                    <small>
+                      Beim Kopieren werden die Gerichte
+                      übernommen. Die Portionszahlen
+                      beginnen bei 0 und können
+                      angepasst werden.
+                    </small>
+                  </label>
+                )}
+
+                <div className="kitchen-form-actions">
+                  <button
+                    type="submit"
+                    className="edit-button"
+                  >
+                    <Check size={17} />
+                    Küche speichern
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowKitchenForm(false)
+                    }
+                  >
+                    Abbrechen
+                  </button>
+                </div>
+              </form>
+            )}
+
+            <div className="kitchen-grid">
+              {kitchens.map(item => (
+                <article
+                  className="kitchen-card"
+                  key={item.id}
+                >
+                  <h3>🏢 {item.name}</h3>
+
+                  <p>
+                    <strong>{item.participants}</strong>
+                    {' '}Essensteilnehmer
+                  </p>
+
+                  <div className="kitchen-meals">
+                    {item.meals.map(type => (
+                      <span key={type}>
+                        {MEAL_ICONS[type]} {type}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="kitchen-actions">
+                    <button
+                      className="edit-button"
+                      onClick={() =>
+                        openEditKitchen(item)
+                      }
+                    >
+                      <Pencil size={16} />
+                      Bearbeiten
+                    </button>
+
+                    <button
+                      className="danger"
+                      onClick={() =>
+                        deleteKitchen(item)
+                      }
+                    >
+                      <Trash2 size={16} />
+                      Löschen
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
           </section>
         )}
 
         {![
           'Dashboard',
-          'Speiseplanung'
+          'Speiseplanung',
+          'Küchen'
         ].includes(page) && (
           <section className="meal-plan">
             <h2>{page}</h2>
-
             <p>
-              Dieser Bereich wird in einer
-              späteren Version umgesetzt.
+              Dieser Bereich wird später umgesetzt.
             </p>
 
             <button
@@ -680,7 +1051,6 @@ export default function App() {
             </button>
           </section>
         )}
-
       </main>
     </div>
   );
