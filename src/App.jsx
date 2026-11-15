@@ -324,7 +324,44 @@ useEffect(() => {
     setWeekStart(prev => addDays(prev, delta * 7));
     setEditingIds([]);
   }
+function createTemplate() {
+  const name = window.prompt(
+    'Wie soll der Hauptspeiseplan heißen?',
+    'Kita-Speiseplan'
+  );
 
+  if (name === null) return;
+
+  const trimmed = name.trim();
+
+  if (!trimmed) {
+    alert('Bitte einen Namen eingeben.');
+    return;
+  }
+
+  if (
+    templates.some(
+      item =>
+        item.name.toLowerCase() === trimmed.toLowerCase()
+    )
+  ) {
+    alert('Dieser Hauptspeiseplan existiert bereits.');
+    return;
+  }
+
+  const id = makeId();
+
+  setTemplates(prev => [
+    ...prev,
+    {
+      id,
+      name: trimmed
+    }
+  ]);
+
+  setTemplateId(id);
+  setPage('Hauptspeisepläne');
+}
   function openNewKitchen() {
     setEditingKitchenId(null);
     setKitchenForm({
