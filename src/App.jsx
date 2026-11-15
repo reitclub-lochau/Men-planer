@@ -1313,7 +1313,29 @@ function distributeTemplate() {
   <div className="kitchen-card" style={{ marginTop: 20, padding: 20 }}>
     <h3>📤 Hauptspeiseplan verteilen</h3>
     <p>Wähle die Küchen aus, die diesen Speiseplan erhalten sollen.</p>
+<div style={{ marginBottom: 20 }}>
+  <h4>📅 Welche Wochen verteilen?</h4>
 
+  <label style={{ display: 'block', marginBottom: 10 }}>
+    <input
+      type="radio"
+      name="distributionMode"
+      checked={distributionMode === 'single'}
+      onChange={() => setDistributionMode('single')}
+    />
+    {' '}Nur Woche {templateWeek}
+  </label>
+
+  <label style={{ display: 'block' }}>
+    <input
+      type="radio"
+      name="distributionMode"
+      checked={distributionMode === 'all'}
+      onChange={() => setDistributionMode('all')}
+    />
+    {' '}Alle 4 Wochen
+  </label>
+</div>
     {kitchens.map(kitchen => (
       <label
         key={kitchen.id}
