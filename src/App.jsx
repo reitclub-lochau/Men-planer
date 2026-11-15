@@ -1252,7 +1252,18 @@ function distributeTemplate() {
 {templateId && (
   <div style={{ marginTop: 30 }}>
     <h3>📅 Wochenplan bearbeiten</h3>
-
+<div className="week-selector">
+  {[1, 2, 3, 4].map(week => (
+    <button
+      key={week}
+      type="button"
+      className={templateWeek === week ? 'primary' : ''}
+      onClick={() => setTemplateWeek(week)}
+    >
+      Woche {week}
+    </button>
+  ))}
+</div>
     {DAYS.map(day => (
       <div key={day} className="day-card">
         <h3>{day}</h3>
