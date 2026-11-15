@@ -1,13 +1,38 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  LayoutDashboard, CalendarDays, BookOpen, Calculator,
-  ShoppingCart, Building2, Settings, Plus, Trash2,
-  Printer, ChevronLeft, ChevronRight
+  LayoutDashboard,
+  CalendarDays,
+  BookOpen,
+  Calculator,
+  ShoppingCart,
+  Building2,
+  Settings,
+  Plus,
+  Trash2,
+  Printer,
+  ChevronLeft,
+  ChevronRight,
+  Pencil,
+  Check
 } from 'lucide-react';
 
 const KITCHENS = ['Kita Sonnenblume', 'Firmenkantine Leipzig'];
-const DAYS = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+
+const DAYS = [
+  'Montag',
+  'Dienstag',
+  'Mittwoch',
+  'Donnerstag',
+  'Freitag'
+];
+
 const MEAL_TYPES = ['Mittagessen', 'Dessert', 'Vesper'];
+
+const MEAL_ICONS = {
+  Mittagessen: '🍽️',
+  Dessert: '🍮',
+  Vesper: '🍎'
+};
 
 const NAV = [
   ['Dashboard', LayoutDashboard],
@@ -22,8 +47,14 @@ const NAV = [
 const STORAGE_KEY = 'menueplaner-demo-v1';
 
 function mondayOf(date) {
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const d = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
+
   d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+
   return d;
 }
 
@@ -31,6 +62,7 @@ function isoDate(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
+
   return `${y}-${m}-${d}`;
 }
 
@@ -50,8 +82,13 @@ function displayDate(date) {
 
 function loadPlans() {
   try {
-    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    return value && typeof value === 'object' && !Array.isArray(value)
+    const value = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || '{}'
+    );
+
+    return value &&
+      typeof value === 'object' &&
+      !Array.isArray(value)
       ? value
       : {};
   } catch {
@@ -66,16 +103,26 @@ function makeId() {
 
 export default function App() {
   const [page, setPage] = useState('Speiseplanung');
+
   const [kitchen, setKitchen] = useState(KITCHENS[0]);
-  const [weekStart, setWeekStart] = useState(() => mondayOf(new Date()));
+
+  const [weekStart, setWeekStart] = useState(
+    () => mondayOf(new Date())
+  );
+
   const [plans, setPlans] = useState(loadPlans);
+
   const [saved, setSaved] = useState(true);
+
+  const [editingIds, setEditingIds] = useState([]);
 
   const weekKey = isoDate(weekStart);
   const planKey = `${kitchen}::${weekKey}`;
 
   const rows = useMemo(
-    () => Array.isArray(plans[planKey]) ? plans[planKey] : [],
+    () => Array.isArray(plans[planKey])
+      ? plans[planKey]
+      : [],
     [plans, planKey]
   );
 
@@ -86,14 +133,25 @@ export default function App() {
 
   const totalsByType = MEAL_TYPES.reduce((result, type) => {
     result[type] = rows
-      .filter(row => (row.type || 'Mittagessen') === type)
-      .reduce((sum, row) => sum + (Number(row.portions) || 0), 0);
+      .filter(
+        row => (row.type || 'Mittagessen') === type
+      )
+      .reduce(
+        (sum, row) =>
+          sum + (Number(row.portions) || 0),
+        0
+      );
+
     return result;
   }, {});
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(plans)
+      );
+
       setSaved(true);
     } catch {
       setSaved(false);
@@ -102,40 +160,74 @@ export default function App() {
 
   function changeRows(update) {
     setPlans(prev => {
-      const current = Array.isArray(prev[planKey]) ? prev[planKey] : [];
-      return { ...prev, [planKey]: update(current) };
+      const current = Array.isArray(prev[planKey])
+        ? prev[planKey]
+        : [];
+
+      return {
+        ...prev,
+        [planKey]: update(current)
+      };
     });
   }
 
   function addMeal(day, type) {
+    const id = makeId();
+
     changeRows(current => [
       ...current,
       {
-        id: makeId(),
+        id,
         day,
         type,
         name: '',
         portions: 0
       }
     ]);
+
+    setEditingIds(prev => [...prev, id]);
   }
 
   function editMeal(id, field, value) {
     changeRows(current =>
       current.map(row =>
-        row.id === id ? { ...row, [field]: value } : row
+        row.id === id
+          ? { ...row, [field]: value }
+          : row
       )
     );
   }
 
   function removeMeal(id) {
-    if (window.confirm('Dieses Gericht wirklich entfernen?')) {
-      changeRows(current => current.filter(row => row.id !== id));
+    if (
+      window.confirm(
+        'Dieses Gericht wirklich entfernen?'
+      )
+    ) {
+      changeRows(current =>
+        current.filter(row => row.id !== id)
+      );
+
+      setEditingIds(prev =>
+        prev.filter(item => item !== id)
+      );
     }
   }
 
+  function toggleEditing(id) {
+    setEditingIds(prev =>
+      prev.includes(id)
+        ? prev.filter(item => item !== id)
+        : [...prev, id]
+    );
+  }
+
   function moveWeek(delta) {
-    setWeekStart(prev => addDays(prev, delta * 7));
+    setWeekStart(prev =>
+      addDays(prev, delta * 7)
+    );
+
+    setEditingIds([]);
   }
 
   function printPlan() {
@@ -144,6 +236,7 @@ export default function App() {
 
   return (
     <div className="app">
+
       <aside className="sidebar">
         <h2>🍽️ MenüPlaner</h2>
         <p>Kita &amp; Business</p>
@@ -152,43 +245,59 @@ export default function App() {
           {NAV.map(([name, Icon]) => (
             <button
               key={name}
-              className={page === name ? 'active' : ''}
+              className={
+                page === name ? 'active' : ''
+              }
               onClick={() => setPage(name)}
             >
-              <Icon size={20} /> {name}
+              <Icon size={20} />
+              {name}
             </button>
           ))}
         </nav>
       </aside>
 
       <main className="main">
+
         <header className="header">
           <h1>{page}</h1>
 
           <label>
-            <span className="sr-only">Küche auswählen</span>
+            <span className="sr-only">
+              Küche auswählen
+            </span>
+
             <select
               value={kitchen}
-              onChange={e => setKitchen(e.target.value)}
+              onChange={e => {
+                setKitchen(e.target.value);
+                setEditingIds([]);
+              }}
             >
               {KITCHENS.map(name => (
-                <option key={name}>{name}</option>
+                <option key={name}>
+                  {name}
+                </option>
               ))}
             </select>
           </label>
         </header>
 
         <div className="welcome">
-          <strong>MenüPlaner – Testversion</strong>
+          <strong>
+            MenüPlaner – Testversion
+          </strong>
+
           <p>
-            Die Daten werden automatisch in diesem Browser gespeichert.
-            Eine zentrale Speicherung und Benutzeranmeldung folgen später.
+            Deine Speisepläne werden automatisch
+            in diesem Browser gespeichert.
           </p>
         </div>
 
         {page === 'Dashboard' && (
           <>
             <section className="stats">
+
               <div className="card">
                 <h3>Aktuelle Küche</h3>
                 <strong>{kitchen}</strong>
@@ -202,7 +311,9 @@ export default function App() {
               {MEAL_TYPES.map(type => (
                 <div className="card" key={type}>
                   <h3>{type} – Portionen</h3>
-                  <strong>{totalsByType[type]}</strong>
+                  <strong>
+                    {totalsByType[type]}
+                  </strong>
                 </div>
               ))}
 
@@ -213,12 +324,16 @@ export default function App() {
 
               <div className="card">
                 <h3>Speicherung</h3>
-                <strong>{saved ? 'Lokal' : 'Fehler'}</strong>
+                <strong>
+                  {saved ? 'Lokal' : 'Fehler'}
+                </strong>
               </div>
+
             </section>
 
             <section className="meal-plan">
               <h2>Aktueller Wochenplan</h2>
+
               <p>
                 {displayDate(weekStart)} –{' '}
                 {displayDate(addDays(weekStart, 4))}
@@ -226,7 +341,9 @@ export default function App() {
 
               <button
                 className="primary"
-                onClick={() => setPage('Speiseplanung')}
+                onClick={() =>
+                  setPage('Speiseplanung')
+                }
               >
                 Speiseplan bearbeiten
               </button>
@@ -236,13 +353,16 @@ export default function App() {
 
         {page === 'Speiseplanung' && (
           <section className="meal-plan">
+
             <div className="plan-toolbar">
+
               <div>
                 <h2>Wochenspeiseplan</h2>
                 <p>{kitchen}</p>
               </div>
 
               <div className="week-controls">
+
                 <button
                   onClick={() => moveWeek(-1)}
                   aria-label="Vorherige Woche"
@@ -263,14 +383,21 @@ export default function App() {
                 </button>
 
                 <button
-                  onClick={() => setWeekStart(mondayOf(new Date()))}
+                  onClick={() =>
+                    setWeekStart(mondayOf(new Date()))
+                  }
                 >
                   Diese Woche
                 </button>
 
-                <button className="primary" onClick={printPlan}>
-                  <Printer size={17} /> Drucken
+                <button
+                  className="primary"
+                  onClick={printPlan}
+                >
+                  <Printer size={17} />
+                  Drucken
                 </button>
+
               </div>
             </div>
 
@@ -280,163 +407,224 @@ export default function App() {
                 : '⚠ Speichern fehlgeschlagen'}
             </p>
 
-            <div className="table-scroll">
-              <table className="planning-table">
-                <thead>
-                  <tr>
-                    <th>Tag</th>
-                    <th>Mahlzeit</th>
-                    <th>Gericht</th>
-                    <th>Portionen</th>
-                    <th>Aktion</th>
-                  </tr>
-                </thead>
+            <div className="days-container">
 
-                <tbody>
-                  {DAYS.map((day, index) => {
-                    const dayRows = rows.filter(row => row.day === day);
+              {DAYS.map((day, index) => {
+                const dayRows = rows.filter(
+                  row => row.day === day
+                );
 
-                    const dayTotal = dayRows.reduce(
-                      (sum, row) => sum + (Number(row.portions) || 0),
-                      0
-                    );
+                const dayTotal = dayRows.reduce(
+                  (sum, row) =>
+                    sum + (Number(row.portions) || 0),
+                  0
+                );
 
-                    return (
-                      <React.Fragment key={day}>
-                        <tr>
-                          <th
-                            colSpan={5}
-                            className="day-cell"
-                            style={{ textAlign: 'left' }}
-                          >
-                            {day}{' '}
-                            <small>
-                              {displayDate(addDays(weekStart, index))}
-                            </small>
-                          </th>
-                        </tr>
+                return (
+                  <section
+                    className="day-card"
+                    key={day}
+                  >
 
-                        {MEAL_TYPES.map(type => {
-                          const typeRows = dayRows.filter(
-                            row => (row.type || 'Mittagessen') === type
-                          );
+                    <div className="day-card-header">
+                      <h3>{day}</h3>
 
-                          const typeTotal = typeRows.reduce(
-                            (sum, row) =>
-                              sum + (Number(row.portions) || 0),
-                            0
-                          );
+                      <span>
+                        {displayDate(
+                          addDays(weekStart, index)
+                        )}
+                      </span>
+                    </div>
 
-                          return (
-                            <React.Fragment key={`${day}-${type}`}>
-                              {typeRows.map(row => (
-                                <tr key={row.id}>
-                                  <td></td>
+                    {MEAL_TYPES.map(type => {
+                      const typeRows = dayRows.filter(
+                        row =>
+                          (row.type || 'Mittagessen') === type
+                      );
 
-                                  <td>
-                                    <strong>{type}</strong>
-                                  </td>
+                      const typeTotal = typeRows.reduce(
+                        (sum, row) =>
+                          sum +
+                          (Number(row.portions) || 0),
+                        0
+                      );
 
-                                  <td>
-                                    <input
-                                      aria-label={`${type} ${day}`}
-                                      value={row.name || ''}
-                                      placeholder="Gericht eingeben"
-                                      maxLength={150}
-                                      onChange={e =>
-                                        editMeal(
-                                          row.id,
-                                          'name',
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </td>
+                      return (
+                        <div
+                          className="meal-section"
+                          key={type}
+                        >
 
-                                  <td>
-                                    <input
-                                      aria-label={`Portionen ${type} ${day}`}
-                                      type="number"
-                                      min="0"
-                                      max="500"
-                                      step="1"
-                                      value={row.portions}
-                                      onChange={e => {
-                                        const value = e.target.value;
-                                        const n = Number(value);
+                          <div className="meal-section-header">
+                            <h4>
+                              {MEAL_ICONS[type]} {type}
+                            </h4>
 
-                                        if (
-                                          value === '' ||
-                                          (
-                                            Number.isInteger(n) &&
-                                            n >= 0 &&
-                                            n <= 500
-                                          )
-                                        ) {
+                            <span>
+                              {typeTotal} Portionen
+                            </span>
+                          </div>
+
+                          {typeRows.length === 0 && (
+                            <p className="empty-meal">
+                              Noch kein Gericht geplant
+                            </p>
+                          )}
+
+                          {typeRows.map(row => {
+                            const isEditing =
+                              editingIds.includes(row.id);
+
+                            return (
+                              <div
+                                className="dish-card"
+                                key={row.id}
+                              >
+
+                                {isEditing ? (
+                                  <div className="dish-edit">
+
+                                    <label>
+                                      Gericht
+
+                                      <input
+                                        type="text"
+                                        value={row.name || ''}
+                                        placeholder="Gericht eingeben"
+                                        maxLength={150}
+                                        onChange={e =>
                                           editMeal(
                                             row.id,
-                                            'portions',
-                                            value === '' ? '' : n
-                                          );
+                                            'name',
+                                            e.target.value
+                                          )
                                         }
-                                      }}
-                                    />
-                                  </td>
+                                      />
+                                    </label>
 
-                                  <td>
+                                    <label>
+                                      Portionen
+
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        max="500"
+                                        step="1"
+                                        value={row.portions}
+                                        onChange={e => {
+                                          const value =
+                                            e.target.value;
+
+                                          const n =
+                                            Number(value);
+
+                                          if (
+                                            value === '' ||
+                                            (
+                                              Number.isInteger(n) &&
+                                              n >= 0 &&
+                                              n <= 500
+                                            )
+                                          ) {
+                                            editMeal(
+                                              row.id,
+                                              'portions',
+                                              value === ''
+                                                ? ''
+                                                : n
+                                            );
+                                          }
+                                        }}
+                                      />
+                                    </label>
+
+                                  </div>
+                                ) : (
+                                  <div className="dish-info">
+
+                                    <strong>
+                                      {row.name ||
+                                        'Unbenanntes Gericht'}
+                                    </strong>
+
+                                    <span>
+                                      {Number(row.portions) || 0}
+                                      {' '}Portionen
+                                    </span>
+
+                                  </div>
+                                )}
+
+                                <div className="dish-actions">
+
+                                  <button
+                                    className="edit-button"
+                                    onClick={() =>
+                                      toggleEditing(row.id)
+                                    }
+                                  >
+                                    {isEditing ? (
+                                      <>
+                                        <Check size={17} />
+                                        Fertig
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Pencil size={17} />
+                                        Bearbeiten
+                                      </>
+                                    )}
+                                  </button>
+
+                                  {isEditing && (
                                     <button
                                       className="danger"
                                       aria-label="Gericht löschen"
-                                      onClick={() => removeMeal(row.id)}
+                                      onClick={() =>
+                                        removeMeal(row.id)
+                                      }
                                     >
-                                      <Trash2 size={18} />
+                                      <Trash2 size={17} />
                                     </button>
-                                  </td>
-                                </tr>
-                              ))}
+                                  )}
 
-                              <tr className="add-row">
-                                <td></td>
+                                </div>
 
-                                <td>
-                                  <strong>{type}</strong>
-                                </td>
+                              </div>
+                            );
+                          })}
 
-                                <td colSpan={3}>
-                                  <button
-                                    onClick={() => addMeal(day, type)}
-                                  >
-                                    <Plus size={17} />
-                                    {' '}Gericht hinzufügen
-                                  </button>
+                          <button
+                            className="add-meal-button"
+                            onClick={() =>
+                              addMeal(day, type)
+                            }
+                          >
+                            <Plus size={17} />
+                            Gericht hinzufügen
+                          </button>
 
-                                  <span className="day-total">
-                                    {typeTotal} Portionen
-                                  </span>
-                                </td>
-                              </tr>
-                            </React.Fragment>
-                          );
-                        })}
+                        </div>
+                      );
+                    })}
 
-                        <tr className="add-row">
-                          <td colSpan={5}>
-                            <strong>
-                              Tagessumme: {dayTotal} Portionen
-                            </strong>
+                    <div className="day-card-footer">
+                      <strong>
+                        Tagessumme:
+                        {' '}{dayTotal} Portionen
+                      </strong>
 
-                            {dayTotal > 500 && (
-                              <span className="warning">
-                                {' '}⚠ Über 500 Portionen!
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      {dayTotal > 500 && (
+                        <span className="warning">
+                          ⚠ Über 500 Portionen!
+                        </span>
+                      )}
+                    </div>
+
+                  </section>
+                );
+              })}
+
             </div>
 
             <div className="summary">
@@ -444,41 +632,55 @@ export default function App() {
 
               {MEAL_TYPES.map(type => (
                 <p key={type}>
-                  {type}: <strong>{totalsByType[type]} Portionen</strong>
+                  {type}:{' '}
+                  <strong>
+                    {totalsByType[type]} Portionen
+                  </strong>
                 </p>
               ))}
 
               <p>
                 <strong>
-                  Gesamt: {total} Portionen in {rows.length} Gerichten
+                  Gesamt: {total} Portionen
+                  {' '}in {rows.length} Gerichten
                 </strong>
               </p>
             </div>
 
             <p className="footnote">
-              Hinweis: Die Grenze von 500 Portionen gilt für die
-              gesamte Tagesplanung. Bei Überschreitung erscheint
-              eine Warnung. Alle Daten werden derzeit ausschließlich
-              lokal in diesem Browser gespeichert.
+              Hinweis: Bei mehr als 500 Portionen
+              pro Tag erscheint eine Warnung.
+              Alle Daten werden derzeit
+              ausschließlich lokal in diesem
+              Browser gespeichert.
             </p>
+
           </section>
         )}
 
-        {!['Dashboard', 'Speiseplanung'].includes(page) && (
+        {![
+          'Dashboard',
+          'Speiseplanung'
+        ].includes(page) && (
           <section className="meal-plan">
             <h2>{page}</h2>
+
             <p>
-              Dieser Bereich wird in einer späteren Version umgesetzt.
+              Dieser Bereich wird in einer
+              späteren Version umgesetzt.
             </p>
 
             <button
               className="primary"
-              onClick={() => setPage('Speiseplanung')}
+              onClick={() =>
+                setPage('Speiseplanung')
+              }
             >
               Zur Speiseplanung
             </button>
           </section>
         )}
+
       </main>
     </div>
   );
