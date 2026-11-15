@@ -382,6 +382,18 @@ function addTemplateMeal(day, type) {
     ]
   }));
 }
+function editTemplateMeal(id, field, value) {
+  if (!templateId) return;
+
+  setTemplatePlans(prev => ({
+    ...prev,
+    [templateId]: (prev[templateId] || []).map(row =>
+      row.id === id
+        ? { ...row, [field]: value }
+        : row
+    )
+  }));
+} 
   function openNewKitchen() {
     setEditingKitchenId(null);
     setKitchenForm({
