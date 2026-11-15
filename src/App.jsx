@@ -242,7 +242,24 @@ const [selectedDays, setSelectedDays] = useState([...DAYS]);
       setSaved(false);
     }
   }, [kitchens]);
+useEffect(() => {
+  try {
+    localStorage.setItem(
+      TEMPLATES_KEY,
+      JSON.stringify(templates)
+    );
 
+    localStorage.setItem(
+      TEMPLATE_PLANS_KEY,
+      JSON.stringify(templatePlans)
+    );
+  } catch (error) {
+    console.error(
+      'Fehler beim Speichern der Hauptspeisepläne:',
+      error
+    );
+  }
+}, [templates, templatePlans]);
   function changeRows(update) {
     setPlans(prev => {
       const current = Array.isArray(prev[planKey])
