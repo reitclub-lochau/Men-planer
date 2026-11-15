@@ -1197,6 +1197,44 @@ function editTemplateMeal(id, field, value) {
     {templates.length === 0 && (
       <p>Noch keine Hauptspeisepläne vorhanden.</p>
     )}
+{templateId && (
+  <div style={{ marginTop: 30 }}>
+    <h3>📅 Wochenplan bearbeiten</h3>
+
+    {DAYS.map(day => (
+      <div key={day} className="day-card">
+        <h3>{day}</h3>
+
+        {MEAL_TYPES.map(type => (
+          <div key={type} style={{ marginBottom: 20 }}>
+            <h4>{MEAL_ICONS[type]} {type}</h4>
+
+            {(templatePlans[templateId] || [])
+              .filter(row => row.day === day && row.type === type)
+              .map(row => (
+                <input
+                  key={row.id}
+                  type="text"
+                  placeholder="Gericht eingeben"
+                  value={row.name}
+                  onChange={e =>
+                    editTemplateMeal(row.id, 'name', e.target.value)
+                  }
+                />
+              ))}
+
+            <button
+              type="button"
+              onClick={() => addTemplateMeal(day, type)}
+            >
+              + Gericht hinzufügen
+            </button>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+)} 
   </section>
 )}
         {![
