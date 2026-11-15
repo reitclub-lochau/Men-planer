@@ -652,7 +652,16 @@ updated[key] = distributionAction === 'replace'
   return (
     <div className="app">
       <aside className="sidebar">
-        <h2>🍽️ MenüPlaner</h2>
+        <img
+  src="/lieblingskueche-logo.jpg"
+  alt="Lieblingsküche"
+  style={{
+    width: '160px',
+    height: 'auto',
+    display: 'block',
+    margin: '0 auto 15px'
+  }}
+/>
         <p>Kita &amp; Business</p>
 
         <nav aria-label="Hauptnavigation">
