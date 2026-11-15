@@ -370,8 +370,8 @@ function addTemplateMeal(day, type) {
 
   setTemplatePlans(prev => ({
     ...prev,
-    [templateId]: [
-      ...(prev[templateId] || []),
+    [`${templateId}::${templateWeek}`]: [
+      ...(prev[`${templateId}::${templateWeek}`] || []),
       {
         id,
         day,
@@ -387,7 +387,7 @@ function editTemplateMeal(id, field, value) {
 
   setTemplatePlans(prev => ({
     ...prev,
-    [templateId]: (prev[templateId] || []).map(row =>
+    [`${templateId}::${templateWeek}`]: (prev[`${templateId}::${templateWeek}`] || []).map(row =>
       row.id === id
         ? { ...row, [field]: value }
         : row
