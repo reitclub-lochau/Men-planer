@@ -1123,11 +1123,55 @@ function createTemplate() {
             </div>
           </section>
         )}
+        {page === 'Hauptspeisepläne' && (
+  
+  
+  
+  
 
+  <section className="meal-plan">
+    <h2>🍽️ Hauptspeisepläne</h2>
+
+    <p>
+      Erstelle verschiedene Speisepläne für Kitas,
+      Schulen und Firmenkantinen.
+    </p>
+
+    <button
+      className="primary"
+      onClick={createTemplate}
+    >
+      <Plus size={18} />
+      Neuen Hauptspeiseplan erstellen
+    </button>
+
+    <div className="kitchen-grid" style={{ marginTop: 20 }}>
+      {templates.map(item => (
+        <article className="kitchen-card" key={item.id}>
+          <h3>📋 {item.name}</h3>
+
+          <button
+            className="edit-button"
+            onClick={() => setTemplateId(item.id)}
+          >
+            {templateId === item.id
+              ? '✓ Ausgewählt'
+              : 'Auswählen'}
+          </button>
+        </article>
+      ))}
+    </div>
+
+    {templates.length === 0 && (
+      <p>Noch keine Hauptspeisepläne vorhanden.</p>
+    )}
+  </section>
+)}
         {![
           'Dashboard',
           'Speiseplanung',
-          'Küchen'
+          'Küchen',
+      'Hauptspeisepläne'
         ].includes(page) && (
           <section className="meal-plan">
             <h2>{page}</h2>
