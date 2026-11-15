@@ -313,3 +313,287 @@ tbody tr:hover {
     line-height: 1.5;
   }
 }
+/* Neue Speiseplanung mit Tageskarten */
+
+.days-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.day-card {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #dce9df;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.day-card-header {
+  background: #edf5ef;
+  padding: 16px;
+  border-bottom: 1px solid #dce9df;
+}
+
+.day-card-header h3 {
+  margin: 0 0 5px;
+  color: #174d36;
+  font-size: 20px;
+}
+
+.day-card-header span {
+  color: #52695a;
+  font-size: 14px;
+}
+
+.meal-section {
+  padding: 16px;
+  border-bottom: 1px solid #e8eee9;
+}
+
+.meal-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.meal-section-header h4 {
+  margin: 0;
+  font-size: 17px;
+  color: #174d36;
+}
+
+.meal-section-header span {
+  font-size: 13px;
+  color: #68796e;
+}
+
+.empty-meal {
+  color: #88978d;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.dish-card {
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #f7faf8;
+  border: 1px solid #e2ece5;
+  border-radius: 10px;
+}
+
+.dish-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dish-info strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.dish-info span {
+  font-size: 14px;
+  color: #52695a;
+}
+
+.dish-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.dish-actions button,
+.add-meal-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.edit-button {
+  background: #e2f0e7;
+  color: #174d36;
+}
+
+.add-meal-button {
+  background: #edf5ef;
+  color: #174d36;
+  width: 100%;
+}
+
+.dish-actions .danger {
+  background: #fde9e9;
+  color: #b42318;
+}
+
+.dish-edit {
+  display: grid;
+  gap: 12px;
+}
+
+.dish-edit label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.dish-edit input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid #cbdcd0;
+  border-radius: 8px;
+  font-size: 16px;
+  background: white;
+}
+
+.day-card-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px;
+  background: #edf5ef;
+  color: #174d36;
+}
+
+.warning {
+  color: #b42318;
+  font-weight: bold;
+}
+
+.summary {
+  margin-top: 25px;
+  padding: 20px;
+  background: #edf5ef;
+  border-radius: 12px;
+}
+
+.plan-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.week-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.week-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 13px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-status {
+  margin-top: 18px;
+  color: #28734f;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 900px) {
+  .days-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .meal-plan {
+    padding: 12px;
+  }
+
+  .days-container {
+    gap: 14px;
+  }
+
+  .meal-section {
+    padding: 12px;
+  }
+
+  .dish-card {
+    padding: 10px;
+  }
+
+  .week-controls {
+    gap: 8px;
+  }
+
+  .week-controls strong {
+    font-size: 15px;
+  }
+}
+
+/* Druckansicht */
+
+@media print {
+  .sidebar,
+  .welcome,
+  .week-controls,
+  .save-status,
+  .dish-actions,
+  .add-meal-button,
+  .footnote {
+    display: none !important;
+  }
+
+  .app {
+    display: block;
+  }
+
+  .main {
+    padding: 0;
+  }
+
+  .days-container {
+    display: block;
+  }
+
+  .day-card {
+    break-inside: avoid;
+    margin-bottom: 12px;
+  }
+
+  .meal-plan {
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .dish-card {
+    break-inside: avoid;
+  }
+}
