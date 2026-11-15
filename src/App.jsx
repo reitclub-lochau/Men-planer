@@ -36,6 +36,7 @@ const NAV = [
   ['Dashboard', LayoutDashboard],
   ['Speiseplanung', CalendarDays],
   ['Rezepte', BookOpen],
+  ['Hauptspeisepläne', BookOpen],
   ['Kalkulation', Calculator],
   ['Einkaufslisten', ShoppingCart],
   ['Küchen', Building2],
