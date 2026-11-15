@@ -1287,6 +1287,56 @@ function distributeTemplate() {
     ))}
   </div>
 )} 
+{templateId && (
+  <button
+    type="button"
+    className="primary"
+    onClick={() => setShowDistribution(true)}
+  >
+    📤 Auf Küchen verteilen
+  </button>
+      )}
+{showDistribution && (
+  <div className="kitchen-card" style={{ marginTop: 20, padding: 20 }}>
+    <h3>📤 Hauptspeiseplan verteilen</h3>
+    <p>Wähle die Küchen aus, die diesen Speiseplan erhalten sollen.</p>
+
+    {kitchens.map(kitchen => (
+      <label
+        key={kitchen.id}
+        style={{ display: 'block', marginBottom: 12 }}
+      >
+        <input
+          type="checkbox"
+          checked={targetKitchenIds.includes(kitchen.id)}
+          onChange={e =>
+            setTargetKitchenIds(prev =>
+              e.target.checked
+                ? [...prev, kitchen.id]
+                : prev.filter(id => id !== kitchen.id)
+            )
+          }
+        />
+        {' '}{kitchen.name}
+      </label>
+    ))}
+
+    <button
+      type="button"
+      className="primary"
+      onClick={distributeTemplate}
+    >
+      Jetzt verteilen
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setShowDistribution(false)}
+    >
+      Abbrechen
+    </button>
+  </div>
+)}  
   </section>
 )}
         {![
