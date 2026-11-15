@@ -174,7 +174,19 @@ export default function App() {
   const [plans, setPlans] = useState(loadPlans);
   const [saved, setSaved] = useState(true);
   const [editingIds, setEditingIds] = useState([]);
+const [templates, setTemplates] = useState(loadTemplates);
 
+const [templatePlans, setTemplatePlans] = useState(
+  loadTemplatePlans
+);
+
+const [templateId, setTemplateId] = useState('');
+
+const [showDistribution, setShowDistribution] = useState(false);
+
+const [targetKitchenIds, setTargetKitchenIds] = useState([]);
+
+const [selectedDays, setSelectedDays] = useState([...DAYS]);
   const [showKitchenForm, setShowKitchenForm] = useState(false);
   const [editingKitchenId, setEditingKitchenId] = useState(null);
   const [kitchenForm, setKitchenForm] = useState(EMPTY_FORM);
