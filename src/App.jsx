@@ -1343,6 +1343,29 @@ updated[key] = distributionAction === 'replace'
     {' '}Alle 4 Wochen
   </label>
 </div>
+ <div style={{ marginBottom: 20 }}>
+  <h4>🔄 Wie sollen die Gerichte übertragen werden?</h4>
+
+  <label style={{ display: 'block', marginBottom: 10 }}>
+    <input
+      type="radio"
+      name="distributionAction"
+      checked={distributionAction === 'replace'}
+      onChange={() => setDistributionAction('replace')}
+    />
+    {' '}Vorhandene Gerichte ersetzen
+  </label>
+
+  <label style={{ display: 'block' }}>
+    <input
+      type="radio"
+      name="distributionAction"
+      checked={distributionAction === 'append'}
+      onChange={() => setDistributionAction('append')}
+    />
+    {' '}Zu vorhandenen Gerichten hinzufügen
+  </label>
+</div>
     {kitchens.map(kitchen => (
       <label
         key={kitchen.id}
