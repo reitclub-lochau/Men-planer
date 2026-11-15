@@ -187,3 +187,129 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 }
+/* Optimierung für Smartphones */
+
+@media (max-width: 700px) {
+
+  .sidebar {
+    padding: 18px 12px;
+  }
+
+  .sidebar h2 {
+    font-size: 23px;
+  }
+
+  .sidebar p {
+    margin-bottom: 18px;
+  }
+
+  .main {
+    padding: 12px;
+  }
+
+  .welcome,
+  .card,
+  .meal-plan {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .meal-plan {
+    overflow-x: visible;
+  }
+
+  .plan-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .week-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .table-scroll {
+    overflow-x: visible;
+  }
+
+  .planning-table,
+  .planning-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .planning-table thead {
+    display: none;
+  }
+
+  .planning-table tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .planning-table td,
+  .planning-table th {
+    display: block;
+    padding: 6px;
+    border: none;
+  }
+
+  .planning-table .day-cell {
+    width: 100%;
+    font-size: 18px;
+    background: #edf5ef;
+  }
+
+  .day-cell small {
+    display: block;
+    margin-top: 4px;
+  }
+
+  .planning-table input {
+    width: 100%;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 9px;
+    font-size: 16px;
+    border: 1px solid #d7e2da;
+    border-radius: 8px;
+  }
+
+  .planning-table td:has(input[type="text"]) {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .planning-table td:has(input[type="number"]) {
+    flex: 1 1 110px;
+    min-width: 0;
+  }
+
+  .planning-table button {
+    min-height: 42px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .add-row td {
+    width: 100%;
+  }
+
+  .day-total {
+    display: block;
+    margin-top: 10px;
+  }
+
+  .summary {
+    font-size: 17px;
+    line-height: 1.5;
+  }
+}
