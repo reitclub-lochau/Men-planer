@@ -609,9 +609,11 @@ function distributeTemplate() {
   }
 
   const confirmed = window.confirm(
-    'Speiseplan auf die ausgewählten Küchen übertragen? ' +
-    'Bereits vorhandene Gerichte dieser Woche werden ersetzt.'
-  );
+  `Speiseplan auf die ausgewählten Küchen übertragen?\n\n` +
+  (distributionAction === 'replace'
+    ? 'Vorhandene Gerichte werden ersetzt.'
+    : 'Neue Gerichte werden zu vorhandenen Gerichten hinzugefügt.')
+);
 
   if (!confirmed) return;
 
