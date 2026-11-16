@@ -823,3 +823,31 @@ h1, h2, h3 {
 .stats .card h3 {
   color: #665C50;
 }
+/* Lieblingsküche – Kompaktes Dashboard auf Smartphones */
+
+@media (max-width: 700px) {
+  .stats {
+    gap: 12px;
+  }
+
+  .stats .card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .stats .card h3 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .stats .card strong {
+    margin-top: 8px;
+    font-size: 24px;
+    overflow-wrap: anywhere;
+  }
+
+  .welcome {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+}
