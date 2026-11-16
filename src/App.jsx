@@ -669,7 +669,10 @@ updated[key] = distributionAction === 'replace'
             <button
               key={name}
               className={page === name ? 'active' : ''}
-              onClick={() => setPage(name)}
+              onClick={() => {
+  setPage(name);
+  setMenuOpen(false);
+}}
             >
               <Icon size={20} />
               {name}
