@@ -55,8 +55,11 @@ body {
 
 .sidebar button:hover,
 .sidebar button.active {
-  background: #28734f;
+  background: #E8C36A;
+  color: #35221D;
+  font-weight: 600;
 }
+  
 
 .main {
   flex: 1;
