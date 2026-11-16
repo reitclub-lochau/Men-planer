@@ -799,3 +799,8 @@ h1, h2, h3 {
   color: #4A2925;
   font-weight: 700;
 }
+/* Lieblingsküche – Mahlzeitenüberschriften */
+
+.day-card h3 {
+  color: #4A2925;
+}
