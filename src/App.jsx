@@ -704,7 +704,7 @@ updated[key] = distributionAction === 'replace'
         </header>
 
         <div className="welcome">
-          <strong>MenüPlaner – Testversion</strong>
+          <strong>Lieblingsküche – Menüplanung</strong>
           <p>
             Alle Daten werden automatisch in diesem Browser
             gespeichert. Eine zentrale Speicherung folgt später.
