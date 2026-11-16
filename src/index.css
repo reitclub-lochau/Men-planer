@@ -804,3 +804,13 @@ h1, h2, h3 {
 .day-card h3 {
   color: #4A2925;
 }
+/* Lieblingsküche – Mahlzeiten */
+
+.meal-section-header h4 {
+  color: #4A2925;
+  font-weight: 700;
+}
+
+.meal-section-header span {
+  color: #665C50;
+}
