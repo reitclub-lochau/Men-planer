@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f4f7f5;
+  background: #FFF9ED;
   color: #24352b;
 }
 
@@ -16,7 +16,7 @@ body {
 
 .sidebar {
   width: 260px;
-  background: #174d36;
+  background: #4A2925;
   color: white;
   padding: 28px 18px;
   flex-shrink: 0;
@@ -28,7 +28,7 @@ body {
 }
 
 .sidebar p {
-  color: #c2ded0;
+  color: #F5DFA8;
   margin-bottom: 40px;
 }
 
