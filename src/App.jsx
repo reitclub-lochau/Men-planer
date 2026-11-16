@@ -652,6 +652,13 @@ updated[key] = distributionAction === 'replace'
   return (
     <div className="app">
       <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
+<button
+  className="menu-close"
+  onClick={() => setMenuOpen(false)}
+  aria-label="Menü schließen"
+>
+  ✕
+</button>
         <img
   src="/lieblingskueche-logo.jpg"
   alt="Lieblingsküche"
