@@ -187,7 +187,7 @@ const [showDistribution, setShowDistribution] = useState(false);
 const [targetKitchenIds, setTargetKitchenIds] = useState([]);
   const [distributionAction, setDistributionAction] = useState('replace');
 const [distributionMode, setDistributionMode] = useState('single');
-const [distributionAction, setDistributionAction] = useState('replace');
+
 const [distributionStart, setDistributionStart] = useState('');
 const [selectedDays, setSelectedDays] = useState([...DAYS]);
   const [showKitchenForm, setShowKitchenForm] = useState(false);
