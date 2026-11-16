@@ -872,3 +872,30 @@ h1, h2, h3 {
   font-weight: 600;
   cursor: pointer;
 }
+/* Lieblingsküche – Mobile Navigation */
+
+@media (max-width: 700px) {
+  .app,
+  .sidebar,
+  .main {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .sidebar nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+
+  .sidebar nav button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
