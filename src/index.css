@@ -762,3 +762,22 @@ button {
 h1, h2, h3 {
   color: #4A2925;
 }
+/* Lieblingsküche – Gericht hinzufügen */
+
+.add-meal-button {
+  background: #F5E3B3;
+  color: #4A2925;
+  border: 1px solid #D9B76C;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-meal-button:hover {
+  background: #E8C36A;
+}
+
+.add-meal-button:focus-visible {
+  outline: 3px solid #8A5A20;
+  outline-offset: 2px;
+}
