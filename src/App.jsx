@@ -183,7 +183,7 @@ const [templatePlans, setTemplatePlans] = useState(
 const [templateId, setTemplateId] = useState('');
 const [templateWeek, setTemplateWeek] = useState(1);
 const [showDistribution, setShowDistribution] = useState(false);
-
+const [menuOpen, setMenuOpen] = useState(false);
 const [targetKitchenIds, setTargetKitchenIds] = useState([]);
   const [distributionAction, setDistributionAction] = useState('replace');
 const [distributionMode, setDistributionMode] = useState('single');
@@ -651,7 +651,7 @@ updated[key] = distributionAction === 'replace'
 }
   return (
     <div className="app">
-      <aside className="sidebar">
+      <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
         <img
   src="/lieblingskueche-logo.jpg"
   alt="Lieblingsküche"
@@ -679,6 +679,12 @@ updated[key] = distributionAction === 'replace'
       </aside>
 
       <main className="main">
+<button
+  className="menu-toggle"
+  onClick={() => setMenuOpen(!menuOpen)}
+>
+  ☰ Menü
+</button>    
         <header className="header">
           <h1>{page}</h1>
 
