@@ -781,3 +781,21 @@ h1, h2, h3 {
   outline: 3px solid #8A5A20;
   outline-offset: 2px;
 }
+/* Lieblingsküche – Tagesüberschriften und Tagessumme */
+
+.day-card-header {
+  background: #FFF4D9;
+  color: #4A2925;
+  border-bottom: 1px solid #E8D5A5;
+}
+
+.day-card-footer {
+  background: #FFF4D9;
+  color: #4A2925;
+  border-top: 1px solid #E8D5A5;
+}
+
+.day-card-footer strong {
+  color: #4A2925;
+  font-weight: 700;
+}
