@@ -814,3 +814,12 @@ h1, h2, h3 {
 .meal-section-header span {
   color: #665C50;
 }
+/* Lieblingsküche – Dashboard */
+
+.stats .card strong {
+  color: #4A2925;
+}
+
+.stats .card h3 {
+  color: #665C50;
+}
