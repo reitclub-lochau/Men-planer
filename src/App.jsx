@@ -1522,7 +1522,13 @@ updated[key] = distributionAction === 'replace'
       min="1"
       defaultValue="10"
     />
-
+<button
+  type="button"
+  className="primary"
+  onClick={saveRecipe}
+>
+  Rezept speichern
+</button>
     <button
       type="button"
       onClick={() => setShowRecipeForm(false)}
