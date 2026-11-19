@@ -1565,6 +1565,20 @@ updated[key] = distributionAction === 'replace'
 >
   ✏️ Bearbeiten
 </button>
+        <button
+  type="button"
+  onClick={() => {
+    if (window.confirm(
+      `Möchtest du das Rezept "${recipe.name}" wirklich löschen?`
+    )) {
+      setRecipes((previous) =>
+        previous.filter((item) => item.id !== recipe.id)
+      );
+    }
+  }}
+>
+  🗑️ Löschen
+</button>
         <p>Kategorie: {recipe.category}</p>
         <p>Portionen: {recipe.portions}</p>
 <label>Gewünschte Portionen:</label>
