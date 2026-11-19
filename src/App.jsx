@@ -188,6 +188,7 @@ const [menuOpen, setMenuOpen] = useState(false);
   const [recipeName, setRecipeName] = useState('');
 const [recipeCategory, setRecipeCategory] = useState('Hauptgericht');
 const [recipePortions, setRecipePortions] = useState(10);
+  const [calculationPortions, setCalculationPortions] = useState({});
   const [recipeIngredients, setRecipeIngredients] = useState([
   { name: '', quantity: '', unit: 'g' }
 ]);
