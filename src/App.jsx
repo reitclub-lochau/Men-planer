@@ -999,8 +999,9 @@ updated[key] = distributionAction === 'replace'
       );
 
       if (recipe) {
-        editMeal(row.id, 'name', recipe.name);
-      }
+  editMeal(row.id, 'name', recipe.name);
+  editMeal(row.id, 'recipeId', recipe.id);
+}
     }}
   >
     <option value="">Rezept auswählen ...</option>
