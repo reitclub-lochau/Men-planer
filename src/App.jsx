@@ -185,6 +185,9 @@ const [templateWeek, setTemplateWeek] = useState(1);
 const [showDistribution, setShowDistribution] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
   const [showRecipeForm, setShowRecipeForm] = useState(false);
+  const [recipeName, setRecipeName] = useState('');
+const [recipeCategory, setRecipeCategory] = useState('Hauptgericht');
+const [recipePortions, setRecipePortions] = useState(10);
   const [recipes, setRecipes] = useState(() => {
   try {
     return JSON.parse(localStorage.getItem('menuplaner_recipes')) || [];
