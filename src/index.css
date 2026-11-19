@@ -348,8 +348,11 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .day-card-header span {
-  color: #52695a;
-  font-size: 14px;
+  display: block;
+  color: #806b55;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .meal-section {
