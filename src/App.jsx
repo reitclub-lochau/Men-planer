@@ -1429,7 +1429,22 @@ updated[key] = distributionAction === 'replace'
 )}  
   </section>
 )}
-        {![
+   {page === 'Rezepte' && (
+  <section className="meal-plan">
+    <h2>📖 Rezeptverwaltung</h2>
+    <p>
+      Hier verwalten wir künftig alle Rezepte
+      für Kitas, Schulen und Firmenkantinen.
+    </p>
+
+    <button
+      className="primary"
+      type="button"
+    >
+      + Neues Rezept
+    </button>
+  </section>
+)}     {![
           'Dashboard',
           'Speiseplanung',
           'Küchen',
