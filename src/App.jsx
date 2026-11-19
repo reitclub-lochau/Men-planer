@@ -1466,11 +1466,12 @@ updated[key] = distributionAction === 'replace'
     <h3>Neues Rezept anlegen</h3>
 
     <label>Rezeptname</label>
-    <input
-      type="text"
-      placeholder="z. B. Nudeln mit Tomatensoße"
-    />
-
+  <input
+  type="text"
+  placeholder="z. B. Nudeln mit Tomatensoße"
+  value={recipeName}
+  onChange={(e) => setRecipeName(e.target.value)}
+/>
     <label>Kategorie</label>
     <select defaultValue="Hauptgericht">
       <option>Hauptgericht</option>
