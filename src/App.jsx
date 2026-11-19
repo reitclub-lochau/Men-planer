@@ -237,7 +237,19 @@ const newRecipe = {
     }))
 };
 
+ if (editingRecipeId) {
+  setRecipes((previous) =>
+    previous.map((recipe) =>
+      recipe.id === editingRecipeId
+        ? { ...newRecipe, id: editingRecipeId }
+        : recipe
+    )
+  );
+} else {
   setRecipes((previous) => [...previous, newRecipe]);
+}
+
+setEditingRecipeId(null);
 
   setRecipeName('');
   setRecipeCategory('Hauptgericht');
