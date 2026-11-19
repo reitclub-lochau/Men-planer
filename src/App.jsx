@@ -1588,6 +1588,17 @@ updated[key] = distributionAction === 'replace'
     </select>
   </div>
 ))}
+<button
+  type="button"
+  onClick={() =>
+    setRecipeIngredients([
+      ...recipeIngredients,
+      { name: '', quantity: '', unit: 'g' }
+    ])
+  }
+>
+  + Weitere Zutat
+</button>
     <input
       type="number"
       min="1"
