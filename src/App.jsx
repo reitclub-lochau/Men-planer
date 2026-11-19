@@ -192,6 +192,12 @@ const [menuOpen, setMenuOpen] = useState(false);
     return [];
   }
 });
+  useEffect(() => {
+  localStorage.setItem(
+    'menuplaner_recipes',
+    JSON.stringify(recipes)
+  );
+}, [recipes]);
 const [targetKitchenIds, setTargetKitchenIds] = useState([]);
   const [distributionAction, setDistributionAction] = useState('replace');
 const [distributionMode, setDistributionMode] = useState('single');
