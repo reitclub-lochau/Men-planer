@@ -1440,6 +1440,7 @@ updated[key] = distributionAction === 'replace'
     <button
       className="primary"
       type="button"
+      onClick={() => setShowRecipeForm(true)}
     >
       + Neues Rezept
     </button>
