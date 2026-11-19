@@ -1599,11 +1599,7 @@ updated[key] = distributionAction === 'replace'
 >
   + Weitere Zutat
 </button>
-    <input
-      type="number"
-      min="1"
-      defaultValue="10"
-    />
+ 
 <button
   type="button"
   className="primary"
