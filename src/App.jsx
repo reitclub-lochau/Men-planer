@@ -1535,6 +1535,59 @@ updated[key] = distributionAction === 'replace'
   value={recipePortions}
   onChange={(e) => setRecipePortions(Number(e.target.value))}
 />
+    <h3>Zutaten</h3>
+
+{recipeIngredients.map((ingredient, index) => (
+  <div key={index} className="meal-plan">
+    <input
+      type="text"
+      placeholder="Zutat, z. B. Nudeln"
+      value={ingredient.name}
+      onChange={(e) => {
+        const updated = [...recipeIngredients];
+        updated[index] = {
+          ...updated[index],
+          name: e.target.value
+        };
+        setRecipeIngredients(updated);
+      }}
+    />
+
+    <input
+      type="number"
+      min="0"
+      step="any"
+      placeholder="Menge"
+      value={ingredient.quantity}
+      onChange={(e) => {
+        const updated = [...recipeIngredients];
+        updated[index] = {
+          ...updated[index],
+          quantity: e.target.value
+        };
+        setRecipeIngredients(updated);
+      }}
+    />
+
+    <select
+      value={ingredient.unit}
+      onChange={(e) => {
+        const updated = [...recipeIngredients];
+        updated[index] = {
+          ...updated[index],
+          unit: e.target.value
+        };
+        setRecipeIngredients(updated);
+      }}
+    >
+      <option value="g">g</option>
+      <option value="kg">kg</option>
+      <option value="ml">ml</option>
+      <option value="l">l</option>
+      <option value="Stück">Stück</option>
+    </select>
+  </div>
+))}
     <input
       type="number"
       min="1"
