@@ -1510,6 +1510,19 @@ updated[key] = distributionAction === 'replace'
         <h4>{recipe.name}</h4>
         <p>Kategorie: {recipe.category}</p>
         <p>Portionen: {recipe.portions}</p>
+        <h4>Zutaten:</h4>
+
+{recipe.ingredients?.length > 0 ? (
+  <ul>
+    {recipe.ingredients.map((ingredient, index) => (
+      <li key={index}>
+        {ingredient.name}: {ingredient.quantity} {ingredient.unit}
+      </li>
+    ))}
+  </ul>
+) : (
+  <p>Keine Zutaten hinterlegt.</p>
+)}
       </div>
     ))}
   </div>
