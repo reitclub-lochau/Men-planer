@@ -388,7 +388,19 @@ useEffect(() => {
       )
     );
   }
-
+function selectRecipeForMeal(mealId, recipe) {
+  changeRows((current) =>
+    current.map((row) =>
+      row.id === mealId
+        ? {
+            ...row,
+            name: recipe.name,
+            recipeId: recipe.id
+          }
+        : row
+    )
+  );
+}
   function removeMeal(id) {
     if (window.confirm('Dieses Gericht wirklich entfernen?')) {
       changeRows(current =>
