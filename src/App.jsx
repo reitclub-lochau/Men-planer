@@ -1010,9 +1010,8 @@ updated[key] = distributionAction === 'replace'
         (item) => item.id === e.target.value
       );
 
-      if (recipe) {
-  editMeal(row.id, 'name', recipe.name);
-  editMeal(row.id, 'recipeId', recipe.id);
+  if (recipe) {
+  selectRecipeForMeal(row.id, recipe);
 }
     }}
   >
