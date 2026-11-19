@@ -1546,15 +1546,12 @@ updated[key] = distributionAction === 'replace'
   <ul>
     {recipe.ingredients.map((ingredient, index) => (
       <li key={index}>
-    {ingredient.name}: {
-  (
-    ingredient.quantity *
+ {ingredient.name}: {formatIngredientQuantity(
+  ingredient.quantity *
     (Number(calculationPortions[recipe.id] ?? recipe.portions) /
-      Number(recipe.portions))
-  ).toLocaleString('de-DE', {
-    maximumFractionDigits: 2
-  })
-} {ingredient.unit}
+      Number(recipe.portions)),
+  ingredient.unit
+)}
       </li>
     ))}
   </ul>
