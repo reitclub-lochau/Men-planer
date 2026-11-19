@@ -382,11 +382,11 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .dish-card {
-  padding: 12px;
-  margin-bottom: 12px;
+  padding: 8px;
+  margin-bottom: 8px;
   background: #f7faf8;
   border: 1px solid #e2ece5;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .dish-info {
