@@ -161,7 +161,24 @@ const EMPTY_FORM = {
   meals: [...MEAL_TYPES],
   copyFrom: ''
 };
+function formatIngredientQuantity(quantity, unit) {
+  let amount = Number(quantity);
+  let displayUnit = unit;
 
+  if (unit === 'g' && amount >= 1000) {
+    amount = amount / 1000;
+    displayUnit = 'kg';
+  }
+
+  if (unit === 'ml' && amount >= 1000) {
+    amount = amount / 1000;
+    displayUnit = 'l';
+  }
+
+  return `${amount.toLocaleString('de-DE', {
+    maximumFractionDigits: 2
+  })} ${displayUnit}`;
+}
 export default function App() {
   const [page, setPage] = useState('Speiseplanung');
   const [kitchens, setKitchens] = useState(loadKitchens);
