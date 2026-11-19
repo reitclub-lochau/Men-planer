@@ -1483,7 +1483,13 @@ updated[key] = distributionAction === 'replace'
       <option>Vesper</option>
     </select>
 
-    <label>Portionen</label>
+   <label>Portionen</label>
+<input
+  type="number"
+  min="1"
+  value={recipePortions}
+  onChange={(e) => setRecipePortions(Number(e.target.value))}
+/>
     <input
       type="number"
       min="1"
