@@ -335,7 +335,7 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
 
 .day-card-header {
   background: #edf5ef;
-  padding: 16px;
+ padding: 10px 12px;
   border-bottom: 1px solid #dce9df;
 }
 
