@@ -202,6 +202,7 @@ const [templateWeek, setTemplateWeek] = useState(1);
 const [showDistribution, setShowDistribution] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
   const [showRecipeForm, setShowRecipeForm] = useState(false);
+  const [editingRecipeId, setEditingRecipeId] = useState(null);
   const [recipeName, setRecipeName] = useState('');
 const [recipeCategory, setRecipeCategory] = useState('Hauptgericht');
 const [recipePortions, setRecipePortions] = useState(10);
