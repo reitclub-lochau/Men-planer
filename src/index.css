@@ -784,9 +784,8 @@ h1, h2, h3 {
   font-weight: 600;
   cursor: pointer;
 }
-
 .add-meal-button:hover {
-  background: #E8C36A;
+  background: #d5e9db;
 }
 
 .add-meal-button:focus-visible {
