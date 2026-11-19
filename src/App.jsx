@@ -204,12 +204,19 @@ const [recipePortions, setRecipePortions] = useState(10);
     return;
   }
 
-  const newRecipe = {
-    id: crypto.randomUUID(),
-    name,
-    category: recipeCategory,
-    portions: recipePortions
-  };
+const newRecipe = {
+  id: crypto.randomUUID(),
+  name,
+  category: recipeCategory,
+  portions: recipePortions,
+  ingredients: recipeIngredients
+    .filter((ingredient) => ingredient.name.trim())
+    .map((ingredient) => ({
+      name: ingredient.name.trim(),
+      quantity: Number(ingredient.quantity),
+      unit: ingredient.unit
+    }))
+};
 
   setRecipes((previous) => [...previous, newRecipe]);
 
