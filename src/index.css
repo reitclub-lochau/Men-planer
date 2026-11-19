@@ -580,7 +580,10 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 /* Druckansicht */
-
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
 @media print {
   .sidebar,
   .welcome,
