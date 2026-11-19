@@ -1511,6 +1511,18 @@ updated[key] = distributionAction === 'replace'
         <h4>{recipe.name}</h4>
         <p>Kategorie: {recipe.category}</p>
         <p>Portionen: {recipe.portions}</p>
+<label>Gewünschte Portionen:</label>
+<input
+  type="number"
+  min="1"
+  value={calculationPortions[recipe.id] ?? recipe.portions}
+  onChange={(e) =>
+    setCalculationPortions({
+      ...calculationPortions,
+      [recipe.id]: e.target.value
+    })
+  }
+/>
         <h4>Zutaten:</h4>
 
 {recipe.ingredients?.length > 0 ? (
