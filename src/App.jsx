@@ -223,6 +223,7 @@ const newRecipe = {
   setRecipeName('');
   setRecipeCategory('Hauptgericht');
   setRecipePortions(10);
+    setRecipeIngredients([{ name: '', quantity: '', unit: 'g' }]);
   setShowRecipeForm(false);
 };
   const [recipes, setRecipes] = useState(() => {
