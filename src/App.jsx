@@ -1445,6 +1445,39 @@ updated[key] = distributionAction === 'replace'
     >
       + Neues Rezept
     </button>
+{showRecipeForm && (
+  <div className="meal-plan">
+    <h3>Neues Rezept anlegen</h3>
+
+    <label>Rezeptname</label>
+    <input
+      type="text"
+      placeholder="z. B. Nudeln mit Tomatensoße"
+    />
+
+    <label>Kategorie</label>
+    <select defaultValue="Hauptgericht">
+      <option>Hauptgericht</option>
+      <option>Beilage</option>
+      <option>Dessert</option>
+      <option>Vesper</option>
+    </select>
+
+    <label>Portionen</label>
+    <input
+      type="number"
+      min="1"
+      defaultValue="10"
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowRecipeForm(false)}
+    >
+      Abbrechen
+    </button>
+  </div>
+)}
   </section>
 )}     {![
           'Dashboard',
