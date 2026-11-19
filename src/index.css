@@ -437,9 +437,16 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .add-meal-button {
-  background: #edf5ef;
-  color: #174d36;
+  background: #e8f3eb;
+  color: #245c3c;
+  border: 1px solid #c5dfcc;
   width: 100%;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.add-meal-button:hover {
+  background: #d5e9db;
 }
 
 .dish-actions .danger {
