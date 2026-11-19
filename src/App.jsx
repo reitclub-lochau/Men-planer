@@ -1488,6 +1488,21 @@ updated[key] = distributionAction === 'replace'
     >
       + Neues Rezept
     </button>
+    <h3>Gespeicherte Rezepte</h3>
+
+{recipes.length === 0 ? (
+  <p>Noch keine Rezepte gespeichert.</p>
+) : (
+  <div>
+    {recipes.map((recipe) => (
+      <div className="meal-plan" key={recipe.id}>
+        <h4>{recipe.name}</h4>
+        <p>Kategorie: {recipe.category}</p>
+        <p>Portionen: {recipe.portions}</p>
+      </div>
+    ))}
+  </div>
+)}
 {showRecipeForm && (
   <div className="meal-plan">
     <h3>Neues Rezept anlegen</h3>
