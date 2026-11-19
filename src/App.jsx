@@ -989,6 +989,30 @@ updated[key] = distributionAction === 'replace'
                                   {isEditing ? (
                                     <div className="dish-edit">
                                       <label>
+  Rezept aus der Rezeptverwaltung auswählen
+
+  <select
+    value=""
+    onChange={(e) => {
+      const recipe = recipes.find(
+        (item) => item.id === e.target.value
+      );
+
+      if (recipe) {
+        editMeal(row.id, 'name', recipe.name);
+      }
+    }}
+  >
+    <option value="">Rezept auswählen ...</option>
+
+    {recipes.map((recipe) => (
+      <option key={recipe.id} value={recipe.id}>
+        {recipe.name}
+      </option>
+    ))}
+  </select>
+</label>
+                                      <label>
                                         Gericht
                                         <input
                                           type="text"
