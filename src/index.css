@@ -406,8 +406,10 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .dish-info span {
-  font-size: 14px;
-  color: #52695a;
+  display: block;
+  font-size: 12px;
+  color: #6b7d70;
+  white-space: nowrap;
 }
 
 .dish-actions {
