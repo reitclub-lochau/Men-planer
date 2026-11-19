@@ -184,6 +184,7 @@ const [templateId, setTemplateId] = useState('');
 const [templateWeek, setTemplateWeek] = useState(1);
 const [showDistribution, setShowDistribution] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
+  const [showRecipeForm, setShowRecipeForm] = useState(false);
 const [targetKitchenIds, setTargetKitchenIds] = useState([]);
   const [distributionAction, setDistributionAction] = useState('replace');
 const [distributionMode, setDistributionMode] = useState('single');
