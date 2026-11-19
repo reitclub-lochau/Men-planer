@@ -919,7 +919,7 @@ updated[key] = distributionAction === 'replace'
                   onClick={() => window.print()}
                 >
                   <Printer size={17} />
-                  Drucken
+                Speiseplan drucken
                 </button>
               </div>
             </div>
