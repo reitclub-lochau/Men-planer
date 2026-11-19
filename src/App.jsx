@@ -185,6 +185,13 @@ const [templateWeek, setTemplateWeek] = useState(1);
 const [showDistribution, setShowDistribution] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
   const [showRecipeForm, setShowRecipeForm] = useState(false);
+  const [recipes, setRecipes] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem('menuplaner_recipes')) || [];
+  } catch {
+    return [];
+  }
+});
 const [targetKitchenIds, setTargetKitchenIds] = useState([]);
   const [distributionAction, setDistributionAction] = useState('replace');
 const [distributionMode, setDistributionMode] = useState('single');
