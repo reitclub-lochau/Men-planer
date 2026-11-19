@@ -188,6 +188,33 @@ const [menuOpen, setMenuOpen] = useState(false);
   const [recipeName, setRecipeName] = useState('');
 const [recipeCategory, setRecipeCategory] = useState('Hauptgericht');
 const [recipePortions, setRecipePortions] = useState(10);
+  const saveRecipe = () => {
+  const name = recipeName.trim();
+
+  if (!name) {
+    alert('Bitte einen Rezeptnamen eingeben.');
+    return;
+  }
+
+  if (!Number.isInteger(recipePortions) || recipePortions < 1) {
+    alert('Bitte eine gültige Portionsanzahl eingeben.');
+    return;
+  }
+
+  const newRecipe = {
+    id: crypto.randomUUID(),
+    name,
+    category: recipeCategory,
+    portions: recipePortions
+  };
+
+  setRecipes((previous) => [...previous, newRecipe]);
+
+  setRecipeName('');
+  setRecipeCategory('Hauptgericht');
+  setRecipePortions(10);
+  setShowRecipeForm(false);
+};
   const [recipes, setRecipes] = useState(() => {
   try {
     return JSON.parse(localStorage.getItem('menuplaner_recipes')) || [];
