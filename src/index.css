@@ -376,7 +376,6 @@ grid-template-columns: repeat(5, minmax(0, 1fr));
   line-height: 1.4;
   color: #4a2925;
 }
-
 .meal-section-header span {
   font-size: 13px;
   color: #68796e;
