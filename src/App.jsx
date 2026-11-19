@@ -1527,6 +1527,23 @@ updated[key] = distributionAction === 'replace'
     {recipes.map((recipe) => (
       <div className="meal-plan" key={recipe.id}>
         <h4>{recipe.name}</h4>
+        <button
+  type="button"
+  onClick={() => {
+    setEditingRecipeId(recipe.id);
+    setRecipeName(recipe.name);
+    setRecipeCategory(recipe.category);
+    setRecipePortions(recipe.portions);
+    setRecipeIngredients(
+      recipe.ingredients?.length
+        ? recipe.ingredients.map((item) => ({ ...item }))
+        : [{ name: '', quantity: '', unit: 'g' }]
+    );
+    setShowRecipeForm(true);
+  }}
+>
+  ✏️ Bearbeiten
+</button>
         <p>Kategorie: {recipe.category}</p>
         <p>Portionen: {recipe.portions}</p>
 <label>Gewünschte Portionen:</label>
