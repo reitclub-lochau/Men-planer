@@ -1473,7 +1473,10 @@ updated[key] = distributionAction === 'replace'
   onChange={(e) => setRecipeName(e.target.value)}
 />
     <label>Kategorie</label>
-    <select defaultValue="Hauptgericht">
+   <select
+  value={recipeCategory}
+  onChange={(e) => setRecipeCategory(e.target.value)}
+>
       <option>Hauptgericht</option>
       <option>Beilage</option>
       <option>Dessert</option>
